@@ -14,9 +14,6 @@
     systems = with flake-utils.lib.system; [x86_64-linux aarch64-linux]; # binary platforms for sui
     # overlays for sui
     overlays = {
-      default = final: prev: {
-        mkSuiRelease = final.callPackage ./nix/package.nix;
-      };
       testnet = final: prev: {
         sui = self.outputs.packages.${final.system};
       };
@@ -47,6 +44,7 @@
         path = ./templates/init;
         description = "devshell for sui testnet";
       };
+      lib.mkSuiRelease = pkgs: pkgs.callPackage ./nix/package.nix {};
     }
     // systemOutputs;
 }
