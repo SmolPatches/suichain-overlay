@@ -32,6 +32,7 @@
   in # merge the two into the actual outputs
      {
       overlays = overlays;
+      templates.default = { path = ./templates/init; description = "devshell for sui testnet";};
     }
     // systemOutputs; 
 }
