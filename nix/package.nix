@@ -1,23 +1,32 @@
+# export a function that can build varios Linux Sui Versions
 {
   stdenv,
   fetchurl,
   autoPatchelfHook,
   gccForLibs,
-}:
-stdenv.mkDerivation rec {
-  pname = "sui-binaries";
-  version = "testnet-v1.47.0";
-  src = fetchurl {
-    url = "https://github.com/MystenLabs/sui/releases/download/${version}/sui-${version}-ubuntu-x86_64.tgz";
-    hash = "sha256-lG7o6j3nldbdo8Ily4NFp03AyTWEJ6Tsu589ZGKb2AE=";
-  };
-  sourceRoot = ".";
-  nativeBuildInputs = [autoPatchelfHook];
-  buildInputs = [gccForLibs.lib];
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/bin
-    cp sui* move-analyzer $out/bin
-    runHook postInstall
-  '';
-}
+}: let
+  mk_release = {
+    type ? "testnet",
+    version_number,
+    arch ? "x86_64",
+    vhash,
+  }:
+    stdenv.mkDerivation rec {
+      pname = "sui-binaries";
+      version = "${type}-v${version_number}";
+      src = fetchurl {
+        url = "https://github.com/MystenLabs/sui/releases/download/${version}/sui-${version}-ubuntu-${arch}.tgz";
+        hash = vhash;
+      };
+      sourceRoot = ".";
+      nativeBuildInputs = [autoPatchelfHook];
+      buildInputs = [gccForLibs.lib];
+      installPhase = ''
+        runHook preInstall
+        mkdir -p $out/bin
+        cp sui* move-analyzer $out/bin
+        runHook postInstall
+      '';
+    };
+in
+  mk_release

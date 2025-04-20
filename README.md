@@ -5,8 +5,8 @@ binaries are patched and not built form source
 
 # TODO
 - add functions to switch facilate switching between different release versions
-- add templates
-
+  - add support for mac
+  - find a way to make remove the need for overlay to supply hash
 # References
 Nix can be hard, but thanks to my fore fathers I am able to learn and do new things too
 
