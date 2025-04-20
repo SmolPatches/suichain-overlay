@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Sui Overlay";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -26,8 +26,8 @@
       };
     in {
       formatter = pkgs.alejandra;
-      packages.sui-binary = pkgs.callPackage ./nix/package.nix {};
-      packages.default = self.packages.${system}.sui-binary;
+      packages.sui-bin = pkgs.callPackage ./nix/package.nix {};
+      packages.default = self.packages.${system}.sui-bin;
     });
   in # merge the two into the actual outputs
      {
