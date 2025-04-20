@@ -12,15 +12,23 @@
     flake-utils,
   }: let
     systems = with flake-utils.lib.system; [x86_64-linux aarch64-linux]; # binary platforms for sui
+    overlays = {
+      testnet = final: prev: {
+        sui = self.outputs.packages.${final.system};
+      };
+    };
   in
-    flake-utils.lib.eachSystem systems (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+    {
+      overlays = overlays;
+    }
+    // flake-utils.lib.eachSystem systems (system: let
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [overlays.testnet];
+      };
     in {
       formatter = pkgs.alejandra;
       packages.sui-binary = pkgs.callPackage ./nix/package.nix {};
       packages.default = self.packages.${system}.sui-binary;
-      overlays.default = final: prev: {
-        sui = self.outputs.packages.${prev.system};
-      };
     });
 }
