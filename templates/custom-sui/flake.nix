@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    sui-overlay.url = "github:SmolPatches/suichain-overlay"; # Update this to your overlay flake path
+    sui-overlay.url = "github:SmolPatches/suichain-overlay"; 
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -16,16 +16,19 @@
   }: let
     systems = ["x86_64-linux" "aarch64-linux"];
     systemOutputs = flake-utils.lib.eachSystem systems (system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        # we want a list of overlay functions
-        overlays = [ sui-overlay.overlays.default ]  ;
+      pkgs = nixpkgs.legacyPackages.${system};
+      devnet = sui-overlay.lib.mkSuiRelease pkgs {
+        # new package for sui 1.46.0
+        type = "devnet"; # testnet devnet mainnet
+        version_number = "1.46.0";
+        vhash = "sha256-4rINWAScAdpNsj3RL6Dw128Mm44SV5ueKqMgfQfVjaA=";
       };
     in {
       devShells.default = pkgs.mkShell {
         name = "sui-dev-shell";
-        packages = [ pkgs.sui ]; # install latest tnet release
-        #packages = [ pkgs.sui-stable ]; # install latest main release
+        packages = [
+          devnet
+        ];
       };
       formatter = pkgs.alejandra;
     });
