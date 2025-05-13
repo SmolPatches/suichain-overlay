@@ -11,7 +11,7 @@
     nixpkgs,
     flake-utils,
   }: let
-    systems = with flake-utils.lib.system; [x86_64-linux aarch64-linux]; # binary platforms for sui
+    systems = with flake-utils.lib.system; [x86_64-linux aarch64-linux aarch64-darwin ]; # binary platforms for sui
     # overlays for sui
     overlays.default = final: prev: {
         # latest testnet
@@ -33,7 +33,7 @@
         {
           type = "testnet";
           version_number = "1.47.0";
-          vhash = "sha256-lG7o6j3nldbdo8Ily4NFp03AyTWEJ6Tsu589ZGKb2AE=";
+          # vhash = "sha256-lG7o6j3nldbdo8Ily4NFp03AyTWEJ6Tsu589ZGKb2AE=";
         };
       packages.sui-stable =
         # mainnet export
@@ -41,7 +41,7 @@
         {
           type = "mainnet";
           version_number = "1.46.3";
-          vhash = "sha256-HbpyaRkjTReiMV1sNxj4rUhVAAOlx8aB3bbgYOj82z8=";
+          # vhash = "sha256-HbpyaRkjTReiMV1sNxj4rUhVAAOlx8aB3bbgYOj82z8=";
         };
       packages.default = self.packages.${system}.sui-tnet;
     });
